@@ -8,6 +8,10 @@ from lxml import objectify
 from flask import Flask, jsonify
 
 
+song_attributes = ["title", "uuid", "lyrics", "composer", "authorText", "authorTranslation", "publisher",
+                   "additionalCopyrightNotes", "language", "songNotes", "tonality", "chordSequence"]
+
+
 def read_xml(filename):
     with open(filename, 'rb') as reader:
         xml_content = reader.read()
@@ -53,18 +57,8 @@ def details(uuid):
     for song in xml.song:
         if txt(song, "uuid") == uuid:
             result = {}
-            add_txt(song, "title", result)
-            add_txt(song, "uuid", result)
-            add_txt(song, "lyrics", result)
-            add_txt(song, "composer", result)
-            add_txt(song, "authorText", result)
-            add_txt(song, "authorTranslation", result)
-            add_txt(song, "publisher", result)
-            add_txt(song, "additionalCopyrightNotes", result)
-            add_txt(song, "language", result)
-            add_txt(song, "songNotes", result)
-            add_txt(song, "tonality", result)
-            add_txt(song, "chordSequence", result)
+            for attribute in song_attributes:
+                add_txt(song, attribute, result)
             return result
     return "not found"
 
