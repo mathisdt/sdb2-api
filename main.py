@@ -6,6 +6,8 @@ from os.path import isfile
 from configparser import ConfigParser
 from lxml import objectify
 from flask import Flask, jsonify
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 
 song_attributes = ["title", "uuid", "lyrics", "composer", "authorText", "authorTranslation", "publisher",
@@ -72,6 +74,23 @@ if __name__ == "__main__":
     config = ConfigParser()
     config.read("config.ini")
 
-    xml = read_xml(config["INPUT"]["file"])
+    xml = None
+
+    def load_xml():
+        global xml
+        xml = read_xml(config["INPUT"]["file"])
+
+    load_xml()
+
+    class ReloadEventHandler(FileSystemEventHandler):
+        def on_modified(self, event):
+            load_xml()
+
+        def on_created(self, event):
+            load_xml()
+
+    observer = Observer()
+    observer.schedule(ReloadEventHandler(), config["INPUT"]["file"])
+    observer.start()
 
     app.run()
