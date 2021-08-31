@@ -36,8 +36,6 @@ def add_txt(song, attribute, result):
         result[attribute] = song[attribute].text
 
 
-# WORKAROUND from https://youtrack.jetbrains.com/issue/PY-49984, use to debug with PyCharm 2021.2.0 and below:
-#app = Flask(__name__, instance_path="/{project_folder_abs_path}/instance")
 app = Flask(__name__)
 
 
